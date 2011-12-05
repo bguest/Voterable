@@ -1,0 +1,7 @@
+#Mac OSX 
+*.DS_Store
+
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
