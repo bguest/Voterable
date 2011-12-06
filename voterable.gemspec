@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "factory_girl", ["~> 2.1.0"]
 
   #Automated Testing
-  s.add_development_dependency "spork", [ "> 0.9.0.rc"]
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "guard-spork"  

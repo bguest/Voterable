@@ -65,16 +65,18 @@ module Voterable
          votes.collect{|x| x.voteable}.compact
       end
 
-      def self.sort_by(hsh)
+      def self.sort_by(hsh = {})
 
          hsh[:page]       ||= 1
          hsh[:limit]      ||= 30
          hsh[:period]     ||= :all_time
          hsh[:tally_type] ||= :point 
 
+         skip_count = (hsh[:page]-1)*hsh[:limit]
+
          case hsh[:period]
          when :latest
-            return self.order_by(:created_at, :desc).page(hsh[:page]).per(hsh[:limit])
+            return self.order_by(:created_at, :desc).skip(skip_count)
          when :all_time
             index = '0.'
          when :year
@@ -89,7 +91,7 @@ module Voterable
 
          string = "tallys." + index + hsh[:tally_type].to_s
 
-         self.order_by(string,:desc).page(hsh[:page]).per(hsh[:limit]) #.where(:tallys.exists => true)
+         self.order_by(string,:desc).skip(skip_count) #.where(:tallys.exists => true)
       end
 
 

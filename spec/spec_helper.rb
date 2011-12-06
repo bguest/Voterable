@@ -9,9 +9,11 @@ require 'voterable' # and any other gems you need
 require 'voterable/functions'
 
 require 'rspec'
+require 'database_cleaner'
 require 'factory_girl'
 FactoryGirl.find_definitions
 
+#Setup Mongoid Database
 Mongoid.configure do |config|
    name = 'voterable_test'
    host = 'localhost'
@@ -28,4 +30,18 @@ RSpec.configure do |config|
    config.treat_symbols_as_metadata_keys_with_true_values = true
    config.filter_run :focus => true
    config.run_all_when_everything_filtered = true
+
+
+   # Database Cleaner
+    config.before(:suite) do
+      DatabaseCleaner.strategy = :truncation
+    end
+
+    config.before(:each) do
+      DatabaseCleaner.start
+    end
+
+    config.after(:each) do
+      DatabaseCleaner.clean
+    end
 end

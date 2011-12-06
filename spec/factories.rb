@@ -19,7 +19,7 @@ FactoryGirl.define do
    factory :voter do
    end
 
-   factory :voteable do
+   factory :voteable, :class => Voteable do
       association :voter, :factory => :voter
    end
 
