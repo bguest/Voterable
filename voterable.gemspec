@@ -25,6 +25,9 @@ Gem::Specification.new do |s|
   s.add_dependency "bson", ["= 1.4.0"]
   s.add_dependency "bson_ext", ["= 1.4.0"]
 
+  #Pagination
+  # s.add_dependency 'kaminari', '>=0.10.2'
+
   #Testing
   s.add_development_dependency "rspec"
   s.add_development_dependency "factory_girl", ["~> 2.1.0"]

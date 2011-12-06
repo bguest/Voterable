@@ -1,5 +1,6 @@
 
 require "voterable/functions"
+# require 'kaminari'
 
 # DUDE! Remember you need to restart the sever to get this file to reload!
 module Voterable
@@ -77,6 +78,7 @@ module Voterable
          case hsh[:period]
          when :latest
             return self.order_by(:created_at, :desc).skip(skip_count)
+            # return self.order_by(:created_at, :desc).page(hsh[:page]).per(hsh[:limit])
          when :all_time
             index = '0.'
          when :year
@@ -92,6 +94,7 @@ module Voterable
          string = "tallys." + index + hsh[:tally_type].to_s
 
          self.order_by(string,:desc).skip(skip_count) #.where(:tallys.exists => true)
+         # self.order_by(string,:desc).page(hsh[:page]).per(hsh[:limit])
       end
 
 
