@@ -1,4 +1,4 @@
-# module Voterable
+module Voterable
    class Tally
       include Mongoid::Document
 
@@ -11,4 +11,4 @@
 
       embedded_in :voteable, polymorphic: true
    end
-# end
+end

@@ -1,6 +1,5 @@
-# module Voterable
+module Voterable
    class Vote
-
       include Mongoid::Document
       include Mongoid::Timestamps
 
@@ -9,4 +8,4 @@
       belongs_to :voter,     polymorphic: true
       belongs_to :voteable,  polymorphic: true
    end
-# end
+end

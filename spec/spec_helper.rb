@@ -6,6 +6,8 @@ require 'bundler/setup'
 
 require 'voterable' # and any other gems you need
 
+require 'voterable/functions'
+
 require 'rspec'
 require 'factory_girl'
 FactoryGirl.find_definitions
@@ -16,12 +18,6 @@ Mongoid.configure do |config|
    config.master = Mongo::Connection.new.db(name)
    config.autocreate_indexes = true
 end
-# require 'yaml'
-# ENV["RAILS_ENV"] ||= 'test'
-# YAML::ENGINE.yamler= 'syck'
-# Mongoid.load!("spec/mongoid.yml")
-
-# Mongoid::Config.instance.from_hash({"database" => "voterable_gem"}) 
 
 RSpec.configure do |config|
    # == Mock Framework
