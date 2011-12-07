@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Voterable::Voteable do
 
 
-   context "when voteables are present",  :focus => true  do 
+   context "when voteables are present" do 
 
       before(:each) do
          @voter = Factory(:voter)
@@ -32,6 +32,20 @@ describe Voterable::Voteable do
 
          it{@all[1].should == @second}
          it{@all[2].should == @third}
+      end
+
+      describe "checking for correct pagination" do
+         
+         before(:each) do
+            @all = Voteable.sort_by(:period => :all_time,
+                                    :page => 2, 
+                                    :limit => 2)
+         end
+
+         # it{@all.count.should == 2}
+         it{@all.current_page.should == 2}
+         it{@all.num_pages.should    == 2}
+         it{@all.limit_value.should  == 2}
       end
 
    end

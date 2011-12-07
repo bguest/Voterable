@@ -68,17 +68,18 @@ module Voterable
 
       def self.sort_by(hsh = {})
 
-         hsh[:page]       ||= 1
+         hsh[:page]       ||= 1         
          hsh[:limit]      ||= 30
          hsh[:period]     ||= :all_time
          hsh[:tally_type] ||= :point 
 
-         skip_count = (hsh[:page]-1)*hsh[:limit]
+         page = ( hsh[:page].to_i >= 1 ? hsh[:page].to_i : 1 ) 
+         skip_count = (page-1)*hsh[:limit]
 
          case hsh[:period]
          when :latest
-            return self.order_by(:created_at, :desc).skip(skip_count)
             # return self.order_by(:created_at, :desc).page(hsh[:page]).per(hsh[:limit])
+            return self.order_by(:created_at, :desc).skip(skip_count).limit(hsh[:limit])
          when :all_time
             index = '0.'
          when :year
@@ -93,8 +94,26 @@ module Voterable
 
          string = "tallys." + index + hsh[:tally_type].to_s
 
-         self.order_by(string,:desc).skip(skip_count) #.where(:tallys.exists => true)
-         # self.order_by(string,:desc).page(hsh[:page]).per(hsh[:limit])
+         #self.order_by(string,:desc).page(hsh[:page]).per(hsh[:limit]) #.where(:tallys.exists => true)
+         sorted = self.order_by(string,:desc).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
+
+         # Array into the class and add necessary methods for pagination
+         sorted.instance_variable_set("@current_page", page)
+         sorted.instance_variable_set("@num_pages", (self.count.to_f/hsh[:limit]).ceil )
+         sorted.instance_variable_set("@limit_value", hsh[:limit])
+         sorted.instance_eval do
+            def current_page
+               @current_page        
+            end
+            def num_pages
+               @num_pages
+            end
+            def limit_value
+               @limit_value
+            end
+         end
+
+         sorted
       end
 
 

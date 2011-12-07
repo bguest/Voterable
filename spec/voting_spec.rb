@@ -22,7 +22,17 @@ describe "Voting" do
       it{@voteable.count.should == 1}
 
       it{@owner.reputation.should == 5}
+      it "should calculate the correct rep after recalculation" do
+         @owner.calculate_reputation
+         @owner.reputation.should == 6
+      end
+
       it{@voter.reputation.should == 1}
+      it "should calculate the correct rep after recalculation" do
+         @voter.calculate_reputation
+         @voter.reputation.should == 1
+      end
+
    end
 
    context "when down voted by voter" do
