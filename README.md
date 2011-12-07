@@ -25,6 +25,8 @@ To add a class that can vote on something (in this case a User), subclass your u
 To add a class that can be voted on (in this case a thing), subclass the thing from Voterable::Voteable
 
     class Thing < Voterable::Voteable
+    ...
+    end
 
 
 Because I'm pretty much assuming that the only person that is using this is me, for now, you can look through the source to figure out how things work. If you want me to do a better job documenting stuff, email me and I'll start working on it

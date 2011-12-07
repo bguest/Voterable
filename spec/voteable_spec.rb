@@ -1,7 +1,7 @@
 
 require 'spec_helper'
 
-describe Voterable::Voteable do
+describe Voterable::Voteable do #:nodoc: all
 
 
    context "when voteables are present" do 

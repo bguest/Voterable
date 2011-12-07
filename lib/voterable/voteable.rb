@@ -1,9 +1,15 @@
 
 require "voterable/functions"
-# require 'kaminari'
 
 # DUDE! Remember you need to restart the sever to get this file to reload!
 module Voterable
+
+   ##
+   # A Voteable is any object that can be voted on, Voteables can be voted
+   # up or down, Voteables keep track of the votes in either direction
+   #
+   # Voteables has_many votes, Voteables can belong_to one voter. It is up
+   # to the outsied program to assign voteables to voters
    class Voteable
 
       include Mongoid::Document

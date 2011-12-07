@@ -1,3 +1,8 @@
+# ----------------------------------------
+# :section: Voterable
+# Voterable source code is on github at https://github.com/bguest/Voterable
+# ----------------------------------------
+
 require "mongoid"
 
 require "voterable/version"

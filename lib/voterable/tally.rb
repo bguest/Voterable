@@ -1,4 +1,7 @@
 module Voterable
+   ##
+   # Tally class represents a count of votes
+   # a tally is embeded in a voteable object
    class Tally
       include Mongoid::Document
 

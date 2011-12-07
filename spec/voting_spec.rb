@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Voting" do
+describe "Voting" do # :nodoc: all
 
    before(:each) do
       @voteable = Factory.create(:voteable)
