@@ -15,15 +15,22 @@ module Voterable
 
       field :reputation,    :type => Integer, default: 0
 
+      # Vote on voteable thing
+      #
+      # @example Current user voting on an emoticon
+      #   current_user.vote(emoticon, :up)
+      # 
+      # @param [ Voterable::Voteable ] voteable The thing that is being voted on
+      # @param [ Symbol ] value The vote value either :up or :down
       def vote(voteable, value)
          voteable.vote(self, value)
       end
 
       ##
       # Retuns the number of votes cast by user
-      # Example:
-      #   >> a_voter.vote_count([1.days_in_seconds, 5.days_in_seconds])
-      #   => 10
+      # @example:
+      #   a_voter.vote_count([1.days_in_seconds, 5.days_in_seconds])
+      #   10
       # Arguments:
       #   period: (array) time between which votes are counted, going backwards from now
       #           
@@ -34,6 +41,11 @@ module Voterable
          self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1).count
       end
 
+      # Recalculates user's reputation 
+      #
+      # @example recalculating a current_user's reputation
+      #   current_user.calculate_reputation
+      #
       def calculate_reputation
          #Contributed things
          # sum = self.things.count + self.things.count 

@@ -3,10 +3,8 @@ module Voterable
    # A vote object represents a vote made on a voteable object by a voter
    # 
    # Example:
-   # == Vote.vote = :up
-   # => :up
-   # == Vote.vote
-   # => :up
+   #  Vote.vote = :up # => :up
+   #  Vote.vote       # => :up
    # 
    # A vote belongs_to both a Voterable::Voter and a Voterable::Voteable
    #

@@ -131,7 +131,9 @@ module Voterable
 
       # Vote the voteable thing up or down 
       #
-      # @parma [ vtr ] voter object that will be doing the voting
+      # @parma [ Voterable::Voter ] voter Voter that will be doing the voting
+      # @param [ Symbol ] value Value of the vote, either :up or :down
+      #
       # @return [ vote ] vote that was cast
       def vote(vtr, value)
 
