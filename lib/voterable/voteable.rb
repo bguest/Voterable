@@ -82,10 +82,12 @@ module Voterable
          page = ( hsh[:page].to_i >= 1 ? hsh[:page].to_i : 1 ) 
          skip_count = (page-1)*hsh[:limit]
 
+         sorted = nil
+
          case hsh[:period]
          when :latest
             # return self.order_by(:created_at, :desc).page(hsh[:page]).per(hsh[:limit])
-            return self.order_by(:created_at, :desc).skip(skip_count).limit(hsh[:limit])
+            sorted = self.order_by(:created_at, :desc).skip(skip_count).limit(hsh[:limit])
          when :all_time
             index = '0.'
          when :year
@@ -98,10 +100,10 @@ module Voterable
             index = '4.'
          end
 
-         string = "tallys." + index + hsh[:tally_type].to_s
-
-         #self.order_by(string,:desc).page(hsh[:page]).per(hsh[:limit]) #.where(:tallys.exists => true)
-         sorted = self.order_by(string,:desc).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
+         unless sorted
+            string = "tallys." + index + hsh[:tally_type].to_s
+            sorted = self.order_by(string,:desc).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
+         end
 
          # Array into the class and add necessary methods for pagination
          sorted.instance_variable_set("@current_page", page)
