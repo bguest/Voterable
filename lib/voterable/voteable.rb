@@ -39,7 +39,7 @@ module Voterable
                       :day      => [0, 1.days_in_seconds]
                      }
 
-      TALLYS = [:point, :count, :up, :down]
+      TALLYS = %w(point count up down).freeze
 
       #Class Methods
 
@@ -251,57 +251,20 @@ module Voterable
          tally.public_send(tally_type.to_s+'=',value)
       end
 
+      # Tally look up methods
+      TALLYS.each do |object|
+         class_eval <<-METHOD
+            def #{object}
+               get_tally("#{object}".to_sym, :all_time)
+            end
 
-      # #Create Getter / Setter Methods for Tally Values
-      # TALLYS.each do |tally_name|
-      #  define_method tally_name do
-      #     get_tally(tally_name,:all_time)
-      #  end
-
-      #  define_method "#{tally_name}=" do |value|
-      #     set_tally(tally_name,value,:all_time)
-      #  end
-      # end
-
-      #CONVIENCE METHODS, WISH ABOVE WORKED
-      def point
-         get_tally(:point, :all_time)
-      end
-
-      def point=(value)
-         set_tally(:point, value, :all_time)
-      end
-
-      def count
-         get_tally(:count, :all_time)
-      end
-
-      def count=(value)
-         set_tally(:count, value, :all_time)
-      end
-
-      def up
-         get_tally(:up, :all_time)
-      end
-
-      def up=(value)
-         set_tally(:up, value, :all_time)
-      end
-
-      def down
-         get_tally(:down, :all_time)
-      end
-
-      def down=(value)
-         set_tally(:down, value, :all_time)
+            def #{object}=(value)
+               set_tally("#{object}".to_sym, value, :all_time)
+            end
+ 
+         METHOD
       end
 
    end
 end
 
-#OLD CODE
-      # if array.count < hsh[:limit]
-      #     diff = hsh[:limit] - array.count
-      #     array += self.where(:tallys.exists => false).limit(diff)
-      #  end
-      #  array
