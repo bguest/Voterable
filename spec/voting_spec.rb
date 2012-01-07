@@ -50,7 +50,8 @@ describe "Voting" do # :nodoc: all
    context "when voting twice with the same vote, should negate the first vote" do
       before(:each) do
          @voteable.vote(@voter,:up)
-         @voteable.vote(@voter,:up)
+         voter = Voter.find(@voter.id)
+         @voteable.vote(voter,:up)
       end
 
       it{@voteable.point.should == 0}
