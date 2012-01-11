@@ -1,7 +1,6 @@
 
 require "voterable/functions"
 
-# DUDE! Remember you need to restart the sever to get this file to reload!
 module Voterable
 
    ##

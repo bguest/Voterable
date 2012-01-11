@@ -48,11 +48,13 @@ module Voterable
       #
       def calculate_reputation
          #Contributed things
-         # sum = self.things.count + self.things.count 
-         sum = self.voteables.count
-
+         sum = 0
+         
          #Things that got votes
-         self.voteables.each{|t| sum+=t.votes_point}
+         self.voteables.each do |t| 
+            sum+=t.class.options(:init)  # Voteable initial value
+            sum+=t.votes_point
+         end
 
          #Vote Back
          self.votes.each do |v|

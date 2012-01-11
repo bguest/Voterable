@@ -3,7 +3,7 @@ require 'voterable'
 
 class Voteable < Voterable::Voteable # :nodoc:
 
-   voteable self, :up => +5, :down => -2 #, :index => true
+   voteable self, :up => +5, :down => -2, :init => 1 #, :index => true
    voteback self, :up => +1, :down => -2
 end
 
