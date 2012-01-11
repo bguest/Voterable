@@ -8,9 +8,9 @@ describe Voterable::Voteable do #:nodoc: all
 
       before(:each) do
          @voter = Factory(:voter)
-         @third  = Factory.create(:voteable, :point => -1)
-         @first  = Factory.create(:voteable, :point => 99)
-         @second = Factory.create(:voteable) #Should Assume 0 points
+         @third  = Factory.create(:voteable, :point => -1, :created_at => 2)
+         @first  = Factory.create(:voteable, :point => 99, :created_at => 1)
+         @second = Factory.create(:voteable, :created_at => 0) #Should Assume 0 points
       end
 
       it{@third.point.should  == -1}
@@ -32,6 +32,14 @@ describe Voterable::Voteable do #:nodoc: all
 
          it{@all[1].should == @second}
          it{@all[2].should == @third}
+      end
+
+      context "when sorting by latest" do
+         before{@all = Voteable.sort_by(:period => :latest)}
+
+         it{@all[0].should == @third}
+         it{@all[1].should == @first}
+         it{@all[2].should == @second}
       end
 
       describe "checking for correct pagination" do
