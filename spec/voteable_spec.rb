@@ -55,8 +55,21 @@ describe Voterable::Voteable do #:nodoc: all
          it{@all.num_pages.should    == 2}
          it{@all.limit_value.should  == 2}
       end
-
    end
+
+   describe ".update_tallys" do 
+      before(:each)do
+         @voter = Factory(:voter)
+         @one = Factory.create(:voteable)
+         @two = Factory.create(:voteable)
+         @one.vote(@voter,:up)
+         Voteable.update_tallys
+      end
+
+      it{Voteable.first.tallys.count.should == 5}
+      it{Voteable.last.tallys.count.should == 1}
+   end
+         
 
 
 end

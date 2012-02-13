@@ -59,6 +59,12 @@ module Voterable
          VOTEBACK[name][value] ||= 0
       end
 
+      # Updates all the tallys for the specified class
+      def self.update_tallys
+         self.all.each do |n| 
+            n.update_tallys if n.votes.count > 0
+         end
+      end
 
       #Need to make sure these only return kind of voteable
       def self.up_voted_by(voter)

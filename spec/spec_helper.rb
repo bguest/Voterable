@@ -4,8 +4,7 @@ require 'rubygems'
 require 'bundler/setup'
 # Bundler.setup
 
-require 'voterable' # and any other gems you need
-
+require 'voterable' 
 require 'voterable/functions'
 
 require 'rspec'
