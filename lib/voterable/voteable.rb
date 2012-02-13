@@ -195,8 +195,8 @@ module Voterable
 
          value = vote.vote
          case value
-            when :up   ; self.up += 1
-            when :down ; self.down += 1
+            when :up   ; self.up -= 1
+            when :down ; self.down -= 1
          end
 
          #Update votee reputation

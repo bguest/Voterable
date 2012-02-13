@@ -8,7 +8,6 @@ class Voteable < Voterable::Voteable # :nodoc:
 end
 
 class Voter < Voterable::Voter # :nodoc:
-
 end
 
 class Vote < Voterable::Vote # :nodoc:

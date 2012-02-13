@@ -32,7 +32,6 @@ describe "Voting" do # :nodoc: all
          @voter.calculate_reputation
          @voter.reputation.should == 1
       end
-
    end
 
    context "when down voted by voter" do
@@ -47,5 +46,20 @@ describe "Voting" do # :nodoc: all
       it{@owner.reputation.should == -2}
       it{@voter.reputation.should == -2}
    end
+
+   context "when voting twice with the same vote, should negate the first vote" do
+      before(:each) do
+         @voteable.vote(@voter,:up)
+         voter = Voter.find(@voter.id)
+         @voteable.vote(voter,:up)
+      end
+
+      it{@voteable.point.should == 0}
+      it{@voteable.up.should    == 0}
+      it{@voteable.down.should  == 0}
+      it{@voteable.count.should == 0}
+
+   end
+
 
 end
