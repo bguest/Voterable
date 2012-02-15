@@ -186,7 +186,7 @@ module Voterable
          original_points = self.point #Record original points to update user 
 
          vote ||= Vote.find(voter_id:vtr.id, voteable_id:self.id) 
-         return if not vote # Return if vote doens't exist
+         return nil unless vote # Return if vote doens't exist
 
          self.point -= self.class.options(vote.vote)
          vtr.reputation -= self.class.vtback(vote.vote)
@@ -204,7 +204,7 @@ module Voterable
          self.voter.save
          vtr.save
 
-         votes.destroy_all(vote_id:vote.id)
+         vote.destroy
          self.save
       end
 
