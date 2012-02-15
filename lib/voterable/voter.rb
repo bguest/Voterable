@@ -26,6 +26,16 @@ module Voterable
          voteable.vote(self, value)
       end
 
+      # Vote for specified voteable
+      # 
+      # @example getting a vote for a voteable
+      #   Voter.vote_for(voteable).vote # => :up
+      #
+      # @return [Vote] vote that voter cast
+      def vote_for(vtable)
+         Vote.where(voter_id:self.id, voteable_id:vtable.id).first
+      end
+
       ##
       # Retuns the number of votes cast by user
       # @example:

@@ -21,4 +21,14 @@ describe Voterable::Voter do
 
    end
 
+   describe "#vote_for" do 
+      
+      it "should return vote" do
+         voter = Factory(:voter)
+         voteable = Factory(:voteable)
+         vote = voter.vote(voteable,:up)
+         voter.vote_for(voteable).should == vote
+      end     
+   end
+
 end
