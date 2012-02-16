@@ -69,7 +69,26 @@ describe Voterable::Voteable do #:nodoc: all
       it{Voteable.first.tallys.count.should == 5}
       it{Voteable.last.tallys.count.should == 1}
    end
-         
 
+   describe ".voted_on_by(voter)" do
+      before(:each) do 
+         @voter = Factory(:voter)
+         @up    = Factory(:voteable)
+         @down  = Factory(:voteable)
+         @voter.vote(@up,:up)
+         @voter.vote(@down,:down)
+      end
+
+      it{Voteable.up_voted_by(@voter).should == [@up]}
+      it{Voteable.down_voted_by(@voter).should == [@down]}
+
+      it "should return up voted voteable" do
+         Voteable.voted_on_by(@voter)[:up].should == [@up]
+      end
+
+      it "should return down voted voteable" do
+         Voteable.voted_on_by(@voter)[:down].should == [@down]
+      end
+   end
 
 end

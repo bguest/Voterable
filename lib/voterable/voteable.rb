@@ -68,14 +68,34 @@ module Voterable
 
       #Need to make sure these only return kind of voteable
       def self.up_voted_by(voter)
-         votes = Vote.where(voter_id:voter.id, vote: :up)
+         votes = Vote.where(voter_id:voter.id, voteable_type:self.name, vote: :up)
          votes.collect{|x| x.voteable}.compact
       end
 
       def self.down_voted_by(voter)
-         votes = Vote.where(voter_id:voter.id, vote: :down)
+         votes = Vote.where(voter_id:voter.id, voteable_type:self.name, vote: :down)
          votes.collect{|x| x.voteable}.compact
       end
+
+      # Returns hash with up and down votes this should be faster than
+      # getting up and down voteables seperatly
+      #
+      # @example getting up and down voted voteables
+      #   Voteable.voted_on_by(voter) # => {:up => [<up_voted>], :down => [<down_voted>]}
+      #
+      def self.voted_on_by(voter)
+         votes = Vote.where(voter_id:voter.id, voteable_type:self.name)
+         up_voted = [] ; down_voted = []
+         votes.each do |vt|         #Sort voteables in to up and down voted
+            if vt.vote == :up
+               up_voted << vt.voteable
+            elsif vt.vote == :down
+               down_voted << vt.voteable
+            end
+         end
+         {:up => up_voted, :down => down_voted}
+      end
+
 
       def self.sort_by(hsh = {})
 
