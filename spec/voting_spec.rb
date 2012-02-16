@@ -9,7 +9,6 @@ describe "Voting" do # :nodoc: all
       @owner.voteables << @voteable
    end
 
-   it{@voteable.should respond_to(:votes_point)}
    it{@voter.should respond_to(:reputation)}
 
    context "when up voted by voter" do

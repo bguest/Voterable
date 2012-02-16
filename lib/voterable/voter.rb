@@ -33,7 +33,7 @@ module Voterable
       #
       # @return [Vote] vote that voter cast
       def vote_for(vtable)
-         Vote.where(voter_id:self.id, voteable_id:vtable.id).first
+         Vote.first(conditions: { voter_id: self.id, voteable_id: vtable.id })
       end
 
       ##
@@ -63,7 +63,7 @@ module Voterable
          #Things that got votes
          self.voteables.each do |t| 
             sum+=t.class.options(:init)  # Voteable initial value
-            sum+=t.votes_point
+            sum+=t.point
          end
 
          #Vote Back

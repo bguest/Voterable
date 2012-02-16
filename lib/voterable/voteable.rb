@@ -26,7 +26,8 @@ module Voterable
          index "tallys.#{i}.down"
       end
 
-      after_initialize :update_tally
+      after_initialize :update_tally   # TODO Shouldn't need to update tallys after save
+      # after_initialize :setup
 
       VOTEABLE = {} 
       VOTEBACK = {}
@@ -132,7 +133,7 @@ module Voterable
 
          # Array into the class and add necessary methods for pagination
          sorted.instance_variable_set("@current_page", page)
-         sorted.instance_variable_set("@num_pages", (self.count.to_f/hsh[:limit]).ceil )
+         sorted.instance_variable_set("@num_pages", (self.count.to_f/hsh[:limit]).ceil ) # TODO eliminate self.count
          sorted.instance_variable_set("@limit_value", hsh[:limit])
          sorted.instance_eval do
             def current_page
@@ -151,10 +152,6 @@ module Voterable
 
 
       #Instance Methods
-
-      def votes_point
-         point || 0
-      end
 
       # Vote the voteable thing up or down 
       #
@@ -202,18 +199,18 @@ module Voterable
          return vt
       end
 
-      def unvote(vtr, vote = nil)
+      def unvote(vtr, vt = nil)
          original_points = self.point #Record original points to update user 
 
-         vote ||= Vote.find(voter_id:vtr.id, voteable_id:self.id) 
-         return nil unless vote # Return if vote doens't exist
+         vt ||= Vote.find(voter_id:vtr.id, voteable_id:self.id) 
+         return nil unless vt # Return if vote doens't exist
 
-         self.point -= self.class.options(vote.vote)
-         vtr.reputation -= self.class.vtback(vote.vote)
+         self.point -= self.class.options(vt.vote)
+         vtr.reputation -= self.class.vtback(vt.vote)
    
          self.count -= 1
 
-         value = vote.vote
+         value = vt.vote
          case value
             when :up   ; self.up -= 1
             when :down ; self.down -= 1
@@ -224,7 +221,7 @@ module Voterable
          self.voter.save
          vtr.save
 
-         vote.destroy
+         vt.destroy
          self.save
       end
 
@@ -246,7 +243,7 @@ module Voterable
          if bracket_votes
             bracket_votes = bracket_votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1)
          else
-            bracket_votes = self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1)
+            bracket_votes = self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1) #.to_a
          end
          up_count   = bracket_votes.where(vote: :up).count
          down_count = bracket_votes.where(vote: :down).count
@@ -260,7 +257,7 @@ module Voterable
       end
 
       def setup
-         #Add Empty Tally Documents
+         Add Empty Tally Documents
          TALLY_TYPES.each_key do |t|
             self.tallys << Tally.new(name: t) unless tallys.where(name: t).first
          end
