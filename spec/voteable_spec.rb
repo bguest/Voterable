@@ -8,9 +8,9 @@ describe Voterable::Voteable do #:nodoc: all
 
       before(:each) do
          @voter = Factory(:voter)
-         @third  = Factory.create(:voteable, :point => -1, :created_at => 2)
-         @first  = Factory.create(:voteable, :point => 99, :created_at => 1)
-         @second = Factory.create(:voteable, :created_at => 0) #Should Assume 0 points
+         @third  = Factory(:voteable, :point => -1, :created_at => 2)
+         @first  = Factory(:voteable, :point => 99, :created_at => 1)
+         @second = Factory(:voteable, :created_at => 0) #Should Assume 0 points
       end
 
       it{@third.point.should  == -1}
@@ -18,8 +18,6 @@ describe Voterable::Voteable do #:nodoc: all
       it{@second.point.should == 0}
 
       it{Voteable.all.count.should == 3}
-      it{@first.tallys.count.should == 1}
-      it{@first.tallys.first.name.should == :all_time}
 
       context "when sorting by points" do
          before{@all = Voteable.sort_by()}
@@ -27,9 +25,6 @@ describe Voterable::Voteable do #:nodoc: all
          it{@all.count.should == 3}
 
          it{@all[0].should == @first}
-         it{@all[0].tallys.count.should == 1}
-         it{@all[0].tallys.first.name.should == :all_time}
-
          it{@all[1].should == @second}
          it{@all[2].should == @third}
       end
@@ -66,8 +61,8 @@ describe Voterable::Voteable do #:nodoc: all
          Voteable.update_tallys
       end
 
-      it{Voteable.first.tallys.count.should == 5}
-      it{Voteable.last.tallys.count.should == 1}
+      it{Voteable.first.tallys.count.should == 4}
+      it{Voteable.last.tallys.count.should == 0}
    end
 
    describe ".voted_on_by(voter)" do

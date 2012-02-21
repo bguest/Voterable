@@ -18,27 +18,30 @@ module Voterable
       has_many    :votes,  as: :voteable, dependent: :delete, class_name: "Voterable::Vote"
       embeds_many :tallys, as: :tallyable, class_name: "Voterable::Tally"
 
+      # All Time Fields
+      field :count,  :type => Integer, :default => 0
+      field :up,     :type => Integer, :default => 0
+      field :down,   :type => Integer, :default => 0
+      field :point,  :type => Integer, :default => 0
+
       #Create Indexes
       index "tallys.point"
       index "tallys.count"
       index "tallys.up"
       index "tallys.down"
 
-      after_initialize :update_tally   # TODO Shouldn't need to update tallys after save
+      before_save :update_tallys   # TODO Shouldn't need to update tallys after save
       # after_initialize :setup
 
       VOTEABLE = {} 
       VOTEBACK = {}
 
-      TALLY_TYPES = { :all_time => [0, Time.now - Time.at(0)],
+      TALLY_TYPES = {
                       :year     => [0, 365.days_in_seconds],
                       :month    => [0, 30.days_in_seconds],
                       :week     => [0, 7.days_in_seconds],
                       :day      => [0, 1.days_in_seconds]
                      }
-
-      TALLYS = %w(point count up down).freeze
-
       #Class Methods
 
       #Set Options
@@ -113,15 +116,9 @@ module Voterable
             # return self.order_by(:created_at, :desc).page(hsh[:page]).per(hsh[:limit])
             sorted = self.order_by(:created_at, :desc).skip(skip_count).limit(hsh[:limit])
          when :all_time
-            index = '0.'
-         when :year
-            index = '1.'
-         when :month
-            index = '2.'
-         when :week
-            index = '3.'
-         when :day
-            index = '4.'
+            sorted = self.order_by(hsh[:tally_type],:desc).skip(skip_count).limit(hsh[:limit])
+         else
+            index = [:year, :month, :week, :day].index(hsh[:period])
          end
 
          unless sorted
@@ -225,24 +222,19 @@ module Voterable
 
       #Updates tally assuming that classes will
       def update_tallys
-         bracket_votes = nil
+         return if self.votes.count <= 0
          TALLY_TYPES.each_key do |period|
-            bracket_votes = self.update_tally(period,bracket_votes)
+             self.update_tally(period)
          end
-         self.save
       end
 
-      def update_tally(period = :all_time, bracket_votes = nil)
+      def update_tally(period = :day)
 
          bracket_time = TALLY_TYPES[period] 
          time_1 = Time.now - bracket_time[1]
          time_2 = Time.now - bracket_time[0]
 
-         if bracket_votes
-            bracket_votes = bracket_votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1)
-         else
-            bracket_votes = self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1) #.to_a
-         end
+         bracket_votes = self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1) #.to_a
          up_count   = bracket_votes.where(vote: :up).count
          down_count = bracket_votes.where(vote: :down).count
          
@@ -262,27 +254,21 @@ module Voterable
       end
 
       def get_tally(tally_type, period = :all_time)
-         tally = self.tallys.find_or_initialize_by(name: period)
-         tally.public_send(tally_type)
+         if period == :all_time
+            self.send(tally_type)
+         else
+            tally = self.tallys.find_or_initialize_by(name: period)
+            tally.public_send(tally_type)
+         end
       end
 
       def set_tally(tally_type, value, period = :all_time)
-         tally = self.tallys.find_or_initialize_by(name: period)
-         tally.public_send(tally_type.to_s+'=',value)
-      end
-
-      # Tally look up methods
-      TALLYS.each do |object|
-         class_eval <<-METHOD
-            def #{object}
-               get_tally("#{object}".to_sym, :all_time)
-            end
-
-            def #{object}=(value)
-               set_tally("#{object}".to_sym, value, :all_time)
-            end
- 
-         METHOD
+         if period == :all_time
+            self.send(tally_type.to_s+"=",value)
+         else
+            tally = self.tallys.find_or_initialize_by(name: period)
+            tally.public_send(tally_type.to_s+'=',value)
+         end
       end
 
    end

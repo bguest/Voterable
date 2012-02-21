@@ -13,3 +13,7 @@ require "voterable/vote"
 require "voterable/voter"
 require "voterable/voteable"
 
+#Rake Tasks
+module Voterable
+  require 'voterable/railtie' if defined?(Rails)
+end
