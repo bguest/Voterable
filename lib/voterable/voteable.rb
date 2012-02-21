@@ -19,12 +19,10 @@ module Voterable
       embeds_many :tallys, as: :tallyable, class_name: "Voterable::Tally"
 
       #Create Indexes
-      for i in 0..4
-         index "tallys.#{i}.point"
-         index "tallys.#{i}.count"
-         index "tallys.#{i}.up"
-         index "tallys.#{i}.down"
-      end
+      index "tallys.point"
+      index "tallys.count"
+      index "tallys.up"
+      index "tallys.down"
 
       after_initialize :update_tally   # TODO Shouldn't need to update tallys after save
       # after_initialize :setup
@@ -257,7 +255,7 @@ module Voterable
       end
 
       def setup
-         Add Empty Tally Documents
+         #Add Empty Tally Documents
          TALLY_TYPES.each_key do |t|
             self.tallys << Tally.new(name: t) unless tallys.where(name: t).first
          end
