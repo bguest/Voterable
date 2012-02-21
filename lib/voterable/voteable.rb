@@ -36,8 +36,7 @@ module Voterable
       VOTEABLE = {} 
       VOTEBACK = {}
 
-      TALLY_TYPES = {
-                      :year     => [0, 365.days_in_seconds],
+      TALLY_TYPES = { :year     => [0, 365.days_in_seconds],
                       :month    => [0, 30.days_in_seconds],
                       :week     => [0, 7.days_in_seconds],
                       :day      => [0, 1.days_in_seconds]
@@ -118,11 +117,11 @@ module Voterable
          when :all_time
             sorted = self.order_by(hsh[:tally_type],:desc).skip(skip_count).limit(hsh[:limit])
          else
-            index = [:year, :month, :week, :day].index(hsh[:period])
+            index = [:year, :month, :week, :day].index(hsh[:period]).to_s
          end
 
          unless sorted
-            string = "tallys." + index + hsh[:tally_type].to_s
+            string = "tallys." + index + '.' + hsh[:tally_type].to_s
             sorted = self.order_by(string,:desc).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
          end
 
@@ -256,6 +255,8 @@ module Voterable
       def get_tally(tally_type, period = :all_time)
          if period == :all_time
             self.send(tally_type)
+         elsif count == 0
+            return 0
          else
             tally = self.tallys.find_or_initialize_by(name: period)
             tally.public_send(tally_type)

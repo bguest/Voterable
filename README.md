@@ -31,5 +31,13 @@ To add a class that can be voted on (in this case a thing), subclass the thing f
 
 Because I'm pretty much assuming that the only person that is using this is me, for now, you can look through the source to figure out how things work. If you want me to do a better job documenting stuff, email me and I'll start working on it
 
+Migration 
+=========
+
+0.0.X --> 0.1.X
+---------------
+
+   $ rake migrate_to_0_1_X
+
 -Tata for now
 -Ben
