@@ -34,7 +34,7 @@ Because I'm pretty much assuming that the only person that is using this is me, 
 Migration 
 =========
 
-0.0.X --> 0.1.X
+0.0.X to 0.1.X
 ---------------
 
    $ rake migrate_to_0_1_X

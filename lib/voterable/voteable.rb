@@ -24,6 +24,8 @@ module Voterable
       field :down,   :type => Integer, :default => 0
       field :point,  :type => Integer, :default => 0
 
+      index [:count,:up,:down,:point]
+
       #Create Indexes
       index "tallys.point"
       index "tallys.count"
