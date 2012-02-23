@@ -24,7 +24,12 @@ module Voterable
       field :down,   :type => Integer, :default => 0
       field :point,  :type => Integer, :default => 0
 
-      index [:count,:up,:down,:point]
+      index [
+         [:count, Mongo::DESCENDING],
+         [:up,    Mongo::DESCENDING],
+         [:down,  Mongo::DESCENDING],
+         [:point, Mongo::DESCENDING]
+      ]
 
       #Create Indexes
       index "tallys.point"
@@ -65,7 +70,7 @@ module Voterable
       # Updates all the tallys for the specified class
       def self.update_tallys
          self.all.each do |n| 
-            n.update_tallys if n.votes.count > 0
+            n.update_tallys
          end
       end
 
@@ -224,6 +229,7 @@ module Voterable
       #Updates tally assuming that classes will
       def update_tallys
          return if self.votes.count <= 0
+            debugger
          TALLY_TYPES.each_key do |period|
              self.update_tally(period)
          end
