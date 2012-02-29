@@ -32,8 +32,8 @@ module Voterable
       #   Voter.vote_for(voteable).vote # => :up
       #
       # @return [Vote] vote that voter cast
-      def vote_for(vtable)
-         Vote.first(conditions: { voter_id: self.id, voteable_id: vtable.id })
+      def vote_for(votable)
+         Vote.first(conditions: { voter_id: self.id, voteable_id: votable.id })
       end
 
       ##
