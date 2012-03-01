@@ -61,8 +61,15 @@ describe Voterable::Voteable do #:nodoc: all
          Voteable.update_tallys
       end
 
-      it{Voteable.first.tallys.count.should == 4}
-      it{Voteable.last.tallys.count.should == 0}
+      it{@one.tallys.count.should == 4}
+      it{@two.tallys.count.should == 0}
+
+      it "should delete tallys for thing that has no votes" do
+         @one.vote(@voter,:up)
+         Voteable.update_tallys
+         @one.tallys.count.should == 0
+      end
+
    end
 
    describe ".voted_on_by(voter)" do

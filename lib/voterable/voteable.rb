@@ -15,7 +15,11 @@ module Voterable
       include Mongoid::Timestamps
 
       belongs_to  :voter,  polymorphic: true
-      has_many    :votes,  as: :voteable, dependent: :delete, class_name: "Voterable::Vote"
+      
+      has_many    :votes,  as: :voteable, 
+                    dependent: :delete, 
+                   class_name: "Voterable::Vote"
+
       embeds_many :tallys, as: :tallyable, class_name: "Voterable::Tally"
 
       # All Time Fields
@@ -228,9 +232,12 @@ module Voterable
 
       #Updates tally assuming that classes will
       def update_tallys
-         return if self.votes.count <= 0
-         TALLY_TYPES.each_key do |period|
-             self.update_tally(period)
+         if self.votes.count > 0
+            TALLY_TYPES.each_key do |period|
+                self.update_tally(period)
+            end
+         elsif self.tallys.count > 0
+            self.tallys.delete_all
          end
       end
 
