@@ -93,6 +93,28 @@ describe Voterable::Voteable do #:nodoc: all
       end
    end
 
+   describe "#voted_on_by(voter)" do
+      before(:each) do 
+         @voter = Factory(:voter)
+         @up    = Factory(:voteable)
+         @down  = Factory(:voteable)
+         @voter.vote(@up,:up)
+         @voter.vote(@down,:down)
+      end
+
+      it "should return up voted votable" do
+         @up.voted_on_by(@voter)[:up].should == [@up]
+      end
+
+      it "should return empty voteable for down voted" do
+         @up.voted_on_by(@voter)[:down].should == []
+      end
+
+      it "should return down voted voteable" do
+         @down.voted_on_by(@voter)[:down].should == [@down]
+      end
+   end
+
    describe ".sort_by" do
       it "should request order_by day" do 
          foo = double("foo")
