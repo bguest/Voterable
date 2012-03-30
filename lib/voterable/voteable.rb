@@ -37,7 +37,7 @@ module Voterable
       index "tallys.up"
       index "tallys.down"
 
-      before_save :update_tallys   # TODO Shouldn't need to update tallys after save
+      #before_save :update_tallys   # TODO Shouldn't need to update tallys after save
       # after_initialize :setup
 
       VOTEABLE = {} 
@@ -228,15 +228,19 @@ module Voterable
 
       #Updates tally assuming that classes will
       def update_tallys
-         return if self.votes.count <= 0
-         TALLY_TYPES.each_key do |period|
-             self.update_tally(period)
+         if votes.count > 0
+            TALLY_TYPES.each_key do |period|
+                update_tally(period)
+            end
+            update_tally(:all_time)    # Update alltime First
          end
       end
 
       def update_tally(period = :day)
 
-         bracket_time = TALLY_TYPES[period] 
+         # Set bracket time with period unless all_time
+         bracket_time = period == :all_time ? [0, Time.now - Time.at(0)] : TALLY_TYPES[period] 
+         
          time_1 = Time.now - bracket_time[1]
          time_2 = Time.now - bracket_time[0]
 
@@ -249,7 +253,7 @@ module Voterable
          set_tally(:count, up_count+down_count, period)
          set_tally(:point, up_count*self.class.options(:up) + down_count*self.class.options(:down), period)
 
-         bracket_votes
+         true
       end
 
       def setup
@@ -276,6 +280,7 @@ module Voterable
          else
             tally = self.tallys.find_or_initialize_by(name: period)
             tally.public_send(tally_type.to_s+'=',value)
+            tally.save
          end
       end
 

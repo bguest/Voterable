@@ -31,6 +31,10 @@ describe "Voting" do # :nodoc: all
          @voter.calculate_reputation
          @voter.reputation.should == 1
       end
+
+      it "vote should have voter" do
+         @voter.votes.first.voter.should == @voter
+      end
    end
 
    context "when down voted by voter" do

@@ -52,14 +52,47 @@ describe Voterable::Voteable do #:nodoc: all
       end
    end
 
+   describe "#update_tally(:all_time)" do 
+      before do 
+         @voter = Factory(:voter)
+         @one   = Factory(:voteable, up:10, down:2, point:11, count:3)
+      end
+
+      context "with up vote" do
+         before do 
+            @voter.vote(@one, :up)
+            @one.update_tally(:all_time)
+         end
+
+         it {@one.up.should == 1}
+         it {@one.down.should == 0}
+         it {@one.point.should == 5}
+         it {@one.count.should == 1}
+      end
+
+      context "with down vote" do
+         before do 
+            @voter.vote(@one, :down)
+            @one.update_tally(:all_time)
+         end
+
+         it {@one.up.should == 0}
+         it {@one.down.should == 1}
+         it {@one.point.should == -2}
+         it {@one.count.should == 1}
+      end
+   end
+
    describe ".update_tallys" do 
       before(:each)do
          @voter = Factory(:voter)
-         @one = Factory.create(:voteable)
+         @one = Factory.create(:voteable, count:10)
          @two = Factory.create(:voteable)
          @one.vote(@voter,:up)
          Voteable.update_tallys
       end
+
+      it{@one.votes.count.should == 1}
 
       it{Voteable.first.tallys.count.should == 4}
       it{Voteable.last.tallys.count.should == 0}
