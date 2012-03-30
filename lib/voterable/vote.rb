@@ -16,5 +16,21 @@ module Voterable
 
       belongs_to :voter,     polymorphic: true
       belongs_to :voteable,  polymorphic: true
+
+
+      # Given an array of votes this function breaks those votes into a hash of
+      #  up and down votes
+      #
+      def self.seperate_votes(votes)
+         up_voted = [] ; down_voted = []
+         votes.each do |vt|         #Sort voteables in to up and down voted
+            if vt.vote == :up
+               up_voted << vt.voteable
+            elsif vt.vote == :down
+               down_voted << vt.voteable
+            end
+         end
+         {:up => up_voted, :down => down_voted}
+      end
    end
 end

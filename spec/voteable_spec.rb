@@ -96,6 +96,12 @@ describe Voterable::Voteable do #:nodoc: all
 
       it{Voteable.first.tallys.count.should == 4}
       it{Voteable.last.tallys.count.should == 0}
+
+      it "should delete tallys for thing that has no votes" do
+         @one.vote(@voter,:up)
+         Voteable.update_tallys
+         Voteable.first.tallys.count.should == 0
+      end
    end
 
    describe ".voted_on_by(voter)" do
@@ -116,6 +122,28 @@ describe Voterable::Voteable do #:nodoc: all
 
       it "should return down voted voteable" do
          Voteable.voted_on_by(@voter)[:down].should == [@down]
+      end
+   end
+
+   describe "#voted_on_by(voter)" do
+      before(:each) do 
+         @voter = Factory(:voter)
+         @up    = Factory(:voteable)
+         @down  = Factory(:voteable)
+         @voter.vote(@up,:up)
+         @voter.vote(@down,:down)
+      end
+
+      it "should return up voted votable" do
+         @up.voted_on_by(@voter)[:up].should == [@up]
+      end
+
+      it "should return empty voteable for down voted" do
+         @up.voted_on_by(@voter)[:down].should == []
+      end
+
+      it "should return down voted voteable" do
+         @down.voted_on_by(@voter)[:down].should == [@down]
       end
    end
 

@@ -15,7 +15,11 @@ module Voterable
       include Mongoid::Timestamps
 
       belongs_to  :voter,  polymorphic: true
-      has_many    :votes,  as: :voteable, dependent: :delete, class_name: "Voterable::Vote"
+      
+      has_many    :votes,  as: :voteable, 
+                    dependent: :delete, 
+                   class_name: "Voterable::Vote"
+
       embeds_many :tallys, as: :tallyable, class_name: "Voterable::Tally"
 
       # All Time Fields
@@ -37,9 +41,6 @@ module Voterable
       index "tallys.up"
       index "tallys.down"
 
-      #before_save :update_tallys   # TODO Shouldn't need to update tallys after save
-      # after_initialize :setup
-
       VOTEABLE = {} 
       VOTEBACK = {}
 
@@ -48,9 +49,10 @@ module Voterable
                       :week     => [0, 7.days_in_seconds],
                       :day      => [0, 1.days_in_seconds]
                      }
+                     
       #Class Methods
 
-      #Set Options
+         #Set options
       def self.voteable(klass = self, options = nil)
          VOTEABLE[klass.name] ||= options
       end
@@ -68,9 +70,9 @@ module Voterable
       end
 
       # Updates all the tallys for the specified class
-      def self.update_tallys
+      def self.update_tallys(logging = false)
          self.all.each do |n| 
-            n.update_tallys
+            n.update_tallys(logging)
          end
       end
 
@@ -93,15 +95,7 @@ module Voterable
       #
       def self.voted_on_by(voter)
          votes = Vote.where(voter_id:voter.id, voteable_type:self.name)
-         up_voted = [] ; down_voted = []
-         votes.each do |vt|         #Sort voteables in to up and down voted
-            if vt.vote == :up
-               up_voted << vt.voteable
-            elsif vt.vote == :down
-               down_voted << vt.voteable
-            end
-         end
-         {:up => up_voted, :down => down_voted}
+         Vote.seperate_votes(votes)
       end
 
 
@@ -227,16 +221,18 @@ module Voterable
       end
 
       #Updates tally assuming that classes will
-      def update_tallys
+      def update_tallys(logging = false)
          if votes.count > 0
             TALLY_TYPES.each_key do |period|
-                update_tally(period)
+                update_tally(period, logging)
             end
-            update_tally(:all_time)    # Update alltime First
+            update_tally(:all_time, logging)    # Update alltime 
+         elsif self.tallys.count > 0
+            self.tallys.delete_all
          end
       end
 
-      def update_tally(period = :day)
+      def update_tally(period = :day, logging = false)
 
          # Set bracket time with period unless all_time
          bracket_time = period == :all_time ? [0, Time.now - Time.at(0)] : TALLY_TYPES[period] 
@@ -282,6 +278,17 @@ module Voterable
             tally.public_send(tally_type.to_s+'=',value)
             tally.save
          end
+      end
+
+      # Returns hash with self's up and down votes for specific user this should
+      #  be faster than getting up and down voteables seperatly
+      #
+      # @example getting up and down voted voteables
+      #   voteable.voted_on_by(voter) # => {:up => [<up_voted>], :down => [<down_voted>]}
+      #
+      def voted_on_by(voter)
+         votes = self.votes.where(voter_id:voter.id, voteable_type:self.class.name)
+         Vote.seperate_votes(votes)
       end
 
    end
