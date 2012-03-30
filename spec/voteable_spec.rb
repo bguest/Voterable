@@ -68,6 +68,7 @@ describe Voterable::Voteable do #:nodoc: all
          it {@one.down.should == 0}
          it {@one.point.should == 5}
          it {@one.count.should == 1}
+         it {Voteable.first.point.should == 5}
       end
 
       context "with down vote" do
@@ -86,8 +87,8 @@ describe Voterable::Voteable do #:nodoc: all
    describe ".update_tallys" do 
       before(:each)do
          @voter = Factory(:voter)
-         @one = Factory.create(:voteable, count:10)
-         @two = Factory.create(:voteable)
+         @one = FactoryGirl.create(:voteable, count:10)
+         @two = FactoryGirl.create(:voteable)
          @one.vote(@voter,:up)
          Voteable.update_tallys
       end

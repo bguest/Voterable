@@ -3,9 +3,9 @@ require 'spec_helper'
 describe "Voting" do # :nodoc: all
 
    before(:each) do
-      @voteable = Factory.create(:voteable)
-      @owner = Factory.create(:voter)
-      @voter = Factory.create(:voter)
+      @voteable = FactoryGirl.create(:voteable)
+      @owner = FactoryGirl.create(:voter)
+      @voter = FactoryGirl.create(:voter)
       @owner.voteables << @voteable
    end
 

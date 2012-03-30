@@ -273,6 +273,7 @@ module Voterable
       def set_tally(tally_type, value, period = :all_time)
          if period == :all_time
             self.send(tally_type.to_s+"=",value)
+            self.save
          else
             tally = self.tallys.find_or_initialize_by(name: period)
             tally.public_send(tally_type.to_s+'=',value)
