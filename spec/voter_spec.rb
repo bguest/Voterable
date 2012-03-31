@@ -21,6 +21,22 @@ describe Voterable::Voter do
 
    end
 
+   describe "#up_down_votes" do 
+      before do 
+         @one = FactoryGirl.create(:voteable)
+         @two = FactoryGirl.create(:voteable)
+         @voter = FactoryGirl.create(:voter)
+
+         @voter.vote(@one,:up)
+         @voter.vote(@two,:down)
+
+         @results = @voter.up_down_votes
+      end
+
+      it {@results[:up].count.should == 1}
+      it {@results[:down].count.should == 1}
+   end
+
    describe "#vote_for" do 
       
       it "should return vote" do

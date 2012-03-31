@@ -123,7 +123,7 @@ module Voterable
 
          unless sorted
             string = "tallys." + index + '.' + hsh[:tally_type].to_s
-            sorted = self.order_by(string,:desc).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
+            sorted = self.order_by([[string,:desc],[:created_at,:desc]]).skip(skip_count).limit(hsh[:limit]) #.where(:tallys.exists => true)
          end
 
          # Array into the class and add necessary methods for pagination

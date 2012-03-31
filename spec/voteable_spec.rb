@@ -153,7 +153,7 @@ describe Voterable::Voteable do #:nodoc: all
          foo = double("foo")
          foo.should_receive(:limit).and_return(foo) 
          foo.should_receive(:skip).and_return(foo)
-         Voteable.should_receive(:order_by).with("tallys.3.point",:desc).and_return(foo)
+         Voteable.should_receive(:order_by).with([["tallys.3.point", :desc], [:created_at, :desc]]).and_return(foo)
          Voteable.sort_by({:period => :day})
       end
    end

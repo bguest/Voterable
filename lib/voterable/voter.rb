@@ -51,6 +51,13 @@ module Voterable
          self.votes.where(:updated_at.lte => time_2).and(:updated_at.gte => time_1).count
       end
 
+      ##
+      # Returns hash of seperated up and down votes
+      #
+      def up_down_votes
+         Vote.seperate_votes(self.votes)
+      end
+
       # Recalculates user's reputation 
       #
       # @example recalculating a current_user's reputation
