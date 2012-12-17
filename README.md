@@ -4,7 +4,7 @@ Voterable
 About
 -----
 
-This is a mongoid dependant gem that adds voteable charactistics to voteable things and the voters that can vote on these things.
+This is a mongoid dependant gem that adds voteable charactistics to voteable things and adds a reputation system for the voters that can vote on these things.
 
 It's my first gem, and quite honestly it's probably not the right way to do things, but it's working great for me, so knock yourself out if you need something more robust than voteable_mongo.
 
